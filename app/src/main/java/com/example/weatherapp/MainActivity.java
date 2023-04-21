@@ -1,6 +1,10 @@
 package com.example.weatherapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Application;
 import android.content.Context;
@@ -13,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.json.JSONObject;
 
@@ -64,6 +71,26 @@ public class MainActivity extends AppCompatActivity {
         {
             ex.printStackTrace();
         }
+
+
+
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        ViewPager2 viewPager2 = findViewById(R.id.view_pager);
+
+        FragmentStateAdapter adapter = new FragmentStateAdapter() {
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                return null;
+            }
+
+            @Override
+            public int getItemCount() {
+                return 4;
+            }
+        }
+
+        TabLayoutMediator mediator = new TabLayoutMediator();
 
     }
 
