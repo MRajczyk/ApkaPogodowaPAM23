@@ -1,29 +1,18 @@
 package com.example.weatherapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.app.Application;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.example.weatherapp.adapters.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
-import org.json.JSONObject;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -43,11 +32,7 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
-            //your codes here
-
         }
-
-        System.out.println("Connetction: " + isNetworkAvailable(getApplication()));
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(OpenWeatherMapService.API_URL)
@@ -55,11 +40,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         OpenWeatherMapService service = retrofit.create(OpenWeatherMapService.class);
-
-        Call<OpenWeatherMapService.WeatherResponse> weatherCall = service.getWeather("London", OpenWeatherMapService.API_KEY);
-
-        try
-        {
+        Call<OpenWeatherMapService.WeatherResponse> weatherCall = service.getWeather("Łódź", OpenWeatherMapService.API_KEY);
+        try {
             System.out.println("downloading data");
             Response<OpenWeatherMapService.WeatherResponse> response = weatherCall.execute();
             OpenWeatherMapService.WeatherResponse apiResponse = response.body();
@@ -67,31 +49,31 @@ public class MainActivity extends AppCompatActivity {
             //API response
             System.out.println(apiResponse);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             ex.printStackTrace();
         }
 
+        TabLayout tabLayout = findViewById(R.id.fragmentTabs);
+        ViewPager2 viewPager2 = findViewById(R.id.viewPagerFragments);
 
-
-        TabLayout tabLayout = findViewById(R.id.tabs);
-        ViewPager2 viewPager2 = findViewById(R.id.view_pager);
-
-        FragmentStateAdapter adapter = new FragmentStateAdapter() {
-            @NonNull
-            @Override
-            public Fragment createFragment(int position) {
-                return null;
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        viewPager2.setAdapter(adapter);
+        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+            switch (position) {
+                case 1:
+                    tab.setText("Today");
+                    break;
+                case 2:
+                    tab.setText("More days");
+                    break;
+                case 3:
+                    tab.setText("More info");
+                    break;
+                default:
+                    tab.setText("Search");
+                    break;
             }
-
-            @Override
-            public int getItemCount() {
-                return 4;
-            }
-        }
-
-        TabLayoutMediator mediator = new TabLayoutMediator();
-
+        }).attach();
     }
 
     @Override
@@ -101,46 +83,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private Boolean isNetworkAvailable(Application application) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network nw = connectivityManager.getActiveNetwork();
-        if (nw == null) return false;
-        NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
-        return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_data_refresh) {
-            System.out.println("CLICK");
-            //                Intent i = new Intent(this,SecondActivity.class);
-//                this.startActivity(i);
-            return true;
-        } else if (itemId == R.id.menu_localization_settings) {
-            //                Intent i = new Intent(this,SecondActivity.class);
-//                this.startActivity(i);
-            return true;
-        } else if (itemId == R.id.menu_units_settings) {
-            //                Intent i = new Intent(this,SecondActivity.class);
-//                this.startActivity(i);
-            return true;
+            //data refresh
+            System.out.println("Refresh");
+        } else if (itemId == R.id.menu_settings) {
+            Intent i = new Intent(this, SettingsActivity.class);
+            this.startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-//    class MyAsyncTask extends AsyncTask<String,Void, JSONObject> {
-//
-//        @Override
-//        protected JSONObject doInBackground(String... urls) {
-//            return RestService.doGet(urls[0]);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(JSONObject jsonObject) {
-//            TextView tv = (TextView) findViewById(R.id.txtView);
-//            tv.setText(jsonObject.toString());
-//        }
-//    }
 }

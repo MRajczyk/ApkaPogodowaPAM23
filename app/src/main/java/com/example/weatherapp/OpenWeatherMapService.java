@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 
 public interface OpenWeatherMapService {
 
-    static final String API_KEY = "787c28b50d8d0e38ae920b839afdee7a";
+    static final String API_KEY = "62cec116baa2f884d8ff51f21cc745ed";
 
     static final String API_URL = "http://api.openweathermap.org/data/2.5/";
 
