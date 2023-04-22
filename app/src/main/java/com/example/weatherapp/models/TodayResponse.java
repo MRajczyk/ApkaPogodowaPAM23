@@ -7,7 +7,7 @@ import com.example.weatherapp.models.subtypes.Rain;
 import com.example.weatherapp.models.subtypes.Snow;
 import com.example.weatherapp.models.subtypes.Weather;
 import com.example.weatherapp.models.subtypes.Wind;
-import com.example.weatherapp.models.subtypes.Sys;
+import com.example.weatherapp.models.subtypes.Sys1d;
 
 import java.util.Arrays;
 
@@ -23,7 +23,7 @@ public class TodayResponse {
     public Snow snow;
     public Clouds clouds;
     public Long dt;
-    public Sys sys;
+    public Sys1d sys;
     public Integer timezone;
     public Integer id;
     public String name;

@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.weatherapp.adapters.ViewPagerAdapter;
+import com.example.weatherapp.models.FiveDayResponse;
 import com.example.weatherapp.models.TodayResponse;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -41,14 +42,20 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         OpenWeatherMapService service = retrofit.create(OpenWeatherMapService.class);
-        Call<TodayResponse> weatherCall = service.getWeather("Łódź", OpenWeatherMapService.API_KEY);
+        Call<TodayResponse> todayWeather = service.getTodayWeather("Łódź", OpenWeatherMapService.API_KEY);
+        Call<FiveDayResponse> fiveDayWeather = service.getForecastWeather("Łódź", OpenWeatherMapService.API_KEY);
         try {
-            System.out.println("downloading data");
-            Response<TodayResponse> response = weatherCall.execute();
+            System.out.println("today data");
+            Response<TodayResponse> response = todayWeather.execute();
             TodayResponse apiResponse = response.body();
-
             //API response
             System.out.println(apiResponse);
+
+            System.out.println("forecast five day data");
+            Response<FiveDayResponse> responseFive = fiveDayWeather.execute();
+            FiveDayResponse apiResponseFive = responseFive.body();
+            //API response
+            System.out.println(apiResponseFive);
         }
         catch (Exception ex) {
             ex.printStackTrace();

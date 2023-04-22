@@ -1,5 +1,6 @@
 package com.example.weatherapp;
 
+import com.example.weatherapp.models.FiveDayResponse;
 import com.example.weatherapp.models.TodayResponse;
 import com.example.weatherapp.models.subtypes.Coord;
 
@@ -16,12 +17,14 @@ public interface OpenWeatherMapService {
     static final String LOCALIZATION_PARAM = "q";
     static final String API_ID_PARAM = "appid";
 
-//
-//    @GET("users/{user}/repos")
-//    Call<List<WeatherResponse>> listRepos(@Path("user") String user);
-
     @GET("weather")
-    Call<TodayResponse> getWeather(
+    Call<TodayResponse> getTodayWeather(
+            @Query(LOCALIZATION_PARAM) String localizationName,
+            @Query(API_ID_PARAM) String apiKey
+    );
+
+    @GET("forecast")
+    Call<FiveDayResponse> getForecastWeather(
             @Query(LOCALIZATION_PARAM) String localizationName,
             @Query(API_ID_PARAM) String apiKey
     );
