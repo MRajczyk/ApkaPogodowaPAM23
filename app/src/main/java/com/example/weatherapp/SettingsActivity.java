@@ -13,7 +13,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(savedInstanceState!=null)
+        if(savedInstanceState != null)
             savedInstanceState.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);

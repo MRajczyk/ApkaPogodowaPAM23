@@ -10,7 +10,7 @@ public class Snow {
 
     @Override
     public String toString() {
-        return "Rain{" +
+        return "Snow{" +
                 "1h=" + h1 +
                 "3h=" + h3 +
                 '}';
