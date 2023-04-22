@@ -1,4 +1,4 @@
-package com.example.weatherapp.models;
+package com.example.weatherapp.models.subtypes;
 
 public class Coord {
     public double lon;
