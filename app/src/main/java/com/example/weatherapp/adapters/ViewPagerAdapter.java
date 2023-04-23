@@ -28,9 +28,9 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new TodayFragment();
             case 2:
-                return new MoreDaysFragment();
-            case 3:
                 return new MoreInfoFragment();
+            case 3:
+                return new MoreDaysFragment();
             default:
                 return new FavoriteCitiesFragment();
         }

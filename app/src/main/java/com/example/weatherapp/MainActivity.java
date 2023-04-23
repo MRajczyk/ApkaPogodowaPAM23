@@ -90,10 +90,10 @@ public class MainActivity extends AppCompatActivity implements Callback {
                     tab.setText("Today");
                     break;
                 case 2:
-                    tab.setText("More days");
+                    tab.setText("More info");
                     break;
                 case 3:
-                    tab.setText("More info");
+                    tab.setText("More days");
                     break;
                 default:
                     tab.setText("Search");
