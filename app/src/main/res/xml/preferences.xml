@@ -6,8 +6,8 @@
             app:defaultValue="Kelvin"
             app:entries="@array/Temperature_units"
             app:entryValues="@array/Temperature_units_values"
-            app:key="Temperature_unit"
-            app:title="Temperature unit"
+            app:key="Temperature_units"
+            app:title="Temperature units"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>
