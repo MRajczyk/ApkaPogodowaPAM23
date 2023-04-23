@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
 
     private String units;
     private WeatherViewModel weatherVM;
-    private TodayResponse weatherData;
-    private FiveDayResponse forecastData;
     private TextView cityTextView;
     private DataDownloader dataDownloader;
     private final String TODAY_WEATHER_FILENAME = "today.txt";
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
         //read temperature unit from preferences, works cuz we always create main activity when coming back from settings
         this.units = preferences.getString("Temperature_units","Kelvin");
         this.dataDownloader = new DataDownloader(this);
-
         this.readFile();
 
         TabLayout tabLayout = findViewById(R.id.fragmentTabs);
@@ -145,23 +143,29 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 System.out.println("File exists... Trying to read if modified more than one hour ago...");
                 long oneHour = 3600000;
                 if (file.lastModified() + oneHour > System.currentTimeMillis()) {
-                    System.out.println("reading today's data");
+                    System.out.println("Modified less than hour ago");
+                    //System.out.println("reading today's data");
                     FileInputStream fis = context.openFileInput(TODAY_WEATHER_FILENAME);
                     ObjectInputStream is = new ObjectInputStream(fis);
                     TodayResponse todayResponse = (TodayResponse) is.readObject();
                     is.close();
                     fis.close();
                     this.weatherVM.setTodayWeather(todayResponse);
-                    System.out.println(this.weatherVM.getTodayWeatherData().getValue());
+                    //System.out.println(this.weatherVM.getTodayWeatherData().getValue());
 
-                    System.out.println("reading forecast 5 days data");
+                    //System.out.println("reading forecast 5 days data");
                     fis = context.openFileInput(FORECAST_WEATHER_FILENAME);
                     is = new ObjectInputStream(fis);
                     FiveDayResponse fiveDayResponse = (FiveDayResponse) is.readObject();
                     is.close();
                     fis.close();
                     this.weatherVM.setForecastWeather(fiveDayResponse);
-                    System.out.println(this.weatherVM.getForecastWeatherData().getValue());
+                    //System.out.println(this.weatherVM.getForecastWeatherData().getValue());
+                }
+                else {
+                    System.out.println("Refreshing data...");
+                    this.dataDownloader.downloadTodaysWeather(this.cityTextView.getText().toString());
+                    this.dataDownloader.downloadForecastWeather(this.cityTextView.getText().toString());
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

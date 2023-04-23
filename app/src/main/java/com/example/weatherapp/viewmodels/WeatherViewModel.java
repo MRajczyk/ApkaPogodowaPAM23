@@ -24,13 +24,14 @@ public class WeatherViewModel extends androidx.lifecycle.ViewModel  {
         return this.todayWeatherData;
     }
 
-    public void setTodayIcon(Bitmap bitmap) {
-        this.todayIcon.setValue(bitmap);
-    }
-
-    public LiveData<Bitmap> getTodayIcon(){
-        return this.todayIcon;
-    }
+//    TODO: decide whether or not to delete
+//    public void setTodayIcon(Bitmap bitmap) {
+//        this.todayIcon.setValue(bitmap);
+//    }
+//
+//    public LiveData<Bitmap> getTodayIcon(){
+//        return this.todayIcon;
+//    }
 
 
     public void setForecastWeather(FiveDayResponse weatherData) {
@@ -41,11 +42,12 @@ public class WeatherViewModel extends androidx.lifecycle.ViewModel  {
         return this.forecastWeatherData;
     }
 
-    public void setForecastIcons(ArrayList<Bitmap> bitmaps) {
-        this.forecastIcons.setValue(bitmaps);
-    }
-
-    public LiveData<ArrayList<Bitmap>> getForecastIcons(){
-        return this.forecastIcons;
-    }
+//    TODO: decide whether or not to delete
+//    public void setForecastIcons(ArrayList<Bitmap> bitmaps) {
+//        this.forecastIcons.setValue(bitmaps);
+//    }
+//
+//    public LiveData<ArrayList<Bitmap>> getForecastIcons(){
+//        return this.forecastIcons;
+//    }
 }
