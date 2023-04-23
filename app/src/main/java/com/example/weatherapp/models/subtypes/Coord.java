@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Coord {
+import java.io.Serializable;
+
+public class Coord implements Serializable {
     public double lon;
     public double lat;
 

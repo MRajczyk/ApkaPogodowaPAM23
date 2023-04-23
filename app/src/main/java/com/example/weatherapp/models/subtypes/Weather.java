@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Weather {
+import java.io.Serializable;
+
+public class Weather implements Serializable {
     public Integer id;
     public String main;
     public String description;

@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Sys5d {
+import java.io.Serializable;
+
+public class Sys5d implements Serializable {
     public String pod;
 
     @Override

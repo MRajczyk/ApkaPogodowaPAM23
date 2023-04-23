@@ -9,9 +9,10 @@ import com.example.weatherapp.models.subtypes.Weather;
 import com.example.weatherapp.models.subtypes.Wind;
 import com.example.weatherapp.models.subtypes.Sys1d;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class TodayResponse {
+public class TodayResponse implements Serializable {
 
     public Coord coord;
     public Weather[] weather;

@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Sys1d {
+import java.io.Serializable;
+
+public class Sys1d implements Serializable {
     public Integer type;
     public Integer id;
     public String country;

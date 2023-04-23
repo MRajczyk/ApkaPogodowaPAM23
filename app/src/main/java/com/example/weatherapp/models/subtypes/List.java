@@ -1,8 +1,9 @@
 package com.example.weatherapp.models.subtypes;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class List {
+public class List implements Serializable {
     public Long dt;
     public Main main;
     public Weather[] weather;

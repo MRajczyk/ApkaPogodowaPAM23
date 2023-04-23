@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Serializable {
     public Integer id;
     public String name;
     public Coord coord;

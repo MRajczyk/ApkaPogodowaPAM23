@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Clouds {
+import java.io.Serializable;
+
+public class Clouds implements Serializable {
     public Integer all;
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Main {
+import java.io.Serializable;
+
+public class Main implements Serializable {
     public double temp;
     public double feels_like;
     public double temp_min;

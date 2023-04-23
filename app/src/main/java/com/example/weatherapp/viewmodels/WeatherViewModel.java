@@ -33,7 +33,7 @@ public class WeatherViewModel extends androidx.lifecycle.ViewModel  {
     }
 
 
-    public void setForecastWeatherData(FiveDayResponse weatherData) {
+    public void setForecastWeather(FiveDayResponse weatherData) {
         this.forecastWeatherData.setValue(weatherData);
     }
 

@@ -1,6 +1,8 @@
 package com.example.weatherapp.models.subtypes;
 
-public class Wind {
+import java.io.Serializable;
+
+public class Wind implements Serializable {
     public double speed;
     public Integer deg;
     public double gust;

@@ -13,17 +13,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DataDownloader {
 
     private final OpenWeatherMapService mapService;
-    private final Context context;
     private final Callback callback;
 
-    DataDownloader(Context context, Callback callback) {
+    DataDownloader(Callback callback) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(OpenWeatherMapService.API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         this.mapService = retrofit.create(OpenWeatherMapService.class);
-        this.context = context;
         this.callback = callback;
     }
 
