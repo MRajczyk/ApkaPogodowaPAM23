@@ -3,12 +3,12 @@
     <string-array name="Temperature_units">
         <item>Kelvin</item>
         <item>Fahrenheit</item>
-        <item>Celcius</item>
+        <item>Celsius</item>
     </string-array>
 
     <string-array name="Temperature_units_values">
         <item>Kelvin</item>
         <item>Fahrenheit</item>
-        <item>Celcius</item>
+        <item>Celsius</item>
     </string-array>
 </resources>
