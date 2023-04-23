@@ -1,7 +1,5 @@
 package com.example.weatherapp.Fragments;
-// dane dodatkowe np.: informacje o sile i kierunku wiatru, wilgotności, widoczności
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +42,7 @@ public class MoreInfoFragment extends Fragment {
 
         ImageView weatherImage = view.findViewById(R.id.WeatherImage);
         int resId = view.getContext().getResources().getIdentifier('_' + result.weather[0].icon, "drawable", view.getContext().getPackageName());
-        System.out.println(resId);
+        //System.out.println(resId);
         weatherImage.setBackgroundResource(resId);
 
         DecimalFormat df = new DecimalFormat("#.##");

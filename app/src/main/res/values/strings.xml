@@ -9,6 +9,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="back">Back</string>
 
     <string name="temperature">Temperature</string>
     <string name="latitude">Latitude</string>
@@ -22,6 +23,7 @@
     <string name="sunrise">Sunrise hour</string>
     <string name="timezone">Timezone</string>
     <string name="day">Day</string>
+    <string name="hour">Hour</string>
     <string name="favourite_city">Favourite city</string>
     <string name="delete">Delete</string>
     <string name="enter_city_name">Enter city name</string>
@@ -30,4 +32,5 @@
     <string name="weather">Weather</string>
     <string name="refreshSettings">Refresh</string>
     <string name="current_time">Current time</string>
+    <string name="something_went_wrong">Something went wrong...</string>
 </resources>
