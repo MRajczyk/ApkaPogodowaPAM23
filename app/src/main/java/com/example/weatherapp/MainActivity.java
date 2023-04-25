@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +35,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +51,34 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private final String TODAY_WEATHER_FILENAME = "today.txt";
     private final String FORECAST_WEATHER_FILENAME = "forecast.txt";
     private Context context;
+
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 15*1000; //Delay for 15 seconds.  One second = 1000 milliseconds.
+
+
+    @Override
+    protected void onResume() {
+        //start handler as activity become visible
+
+        handler.postDelayed( runnable = new Runnable() {
+            public void run() {
+                refreshData();
+                Toast.makeText(MainActivity.this, "Refreshing data", Toast.LENGTH_SHORT).show();
+                handler.postDelayed(runnable, delay);
+            }
+        }, delay);
+
+        super.onResume();
+    }
+    // If onPause() is not included the threads will double up when you
+    // reload the activity
+
+    @Override
+    protected void onPause() {
+        handler.removeCallbacks(runnable); //stop handler when activity not visible
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +108,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
         //read temperature unit from preferences, works cuz we always create main activity when coming back from settings
         this.units = preferences.getString("Temperature_units","Kelvin");
         this.dataDownloader = new DataDownloader(this);
-        this.readFile();
+
+        readFile(this.cityTextView.getText().toString());
 
         TabLayout tabLayout = findViewById(R.id.fragmentTabs);
         ViewPager2 viewPager2 = findViewById(R.id.viewPagerFragments);
@@ -123,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     }
 
     private void refreshData() {
-        System.out.println("Refresh");
+        this.readFile(this.cityTextView.getText().toString());
     }
 
     @Override
@@ -136,16 +168,16 @@ public class MainActivity extends AppCompatActivity implements Callback {
         System.out.println("Error!");
     }
 
-    private void readFile() {
+    public void readFile(String cityName) {
         try {
-            File file = new File(getApplicationContext().getFilesDir(), TODAY_WEATHER_FILENAME);
+            File file = new File(getApplicationContext().getFilesDir(), cityName + '_' + TODAY_WEATHER_FILENAME);
             if (file.exists()) {
-                System.out.println("File exists... Trying to read if modified more than one hour ago...");
+                System.out.println("File exists... Trying to read if modified less than one hour ago...");
                 long oneHour = 3600000;
                 if (file.lastModified() + oneHour > System.currentTimeMillis()) {
                     System.out.println("Modified less than hour ago");
                     //System.out.println("reading today's data");
-                    FileInputStream fis = context.openFileInput(TODAY_WEATHER_FILENAME);
+                    FileInputStream fis = context.openFileInput(cityName + '_' + TODAY_WEATHER_FILENAME);
                     ObjectInputStream is = new ObjectInputStream(fis);
                     TodayResponse todayResponse = (TodayResponse) is.readObject();
                     is.close();
@@ -153,36 +185,38 @@ public class MainActivity extends AppCompatActivity implements Callback {
                     this.weatherVM.setTodayWeather(todayResponse);
                     //System.out.println(this.weatherVM.getTodayWeatherData().getValue());
 
+                    //TODO: ADD CHECKING IF FORECAST WEATHER FILE EXISTS!!! (SHOULD, BUT WHO KNOWS.)
                     //System.out.println("reading forecast 5 days data");
-                    fis = context.openFileInput(FORECAST_WEATHER_FILENAME);
+                    fis = context.openFileInput(cityName + '_' + FORECAST_WEATHER_FILENAME);
                     is = new ObjectInputStream(fis);
                     FiveDayResponse fiveDayResponse = (FiveDayResponse) is.readObject();
                     is.close();
                     fis.close();
                     this.weatherVM.setForecastWeather(fiveDayResponse);
                     //System.out.println(this.weatherVM.getForecastWeatherData().getValue());
-                }
-                else {
-                    System.out.println("Refreshing data...");
-                    this.dataDownloader.downloadTodaysWeather(this.cityTextView.getText().toString());
-                    this.dataDownloader.downloadForecastWeather(this.cityTextView.getText().toString());
+
+                    this.cityTextView.setText(cityName);
+                    return;
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error reading data from file, trying to download!");
-            this.dataDownloader.downloadTodaysWeather(this.cityTextView.getText().toString());
-            this.dataDownloader.downloadForecastWeather(this.cityTextView.getText().toString());
+            this.dataDownloader.downloadTodaysWeather(cityName);
+            this.dataDownloader.downloadForecastWeather(cityName);
             e.printStackTrace();
         }
-
+        System.out.println("Refreshing data...");
+        this.dataDownloader.downloadTodaysWeather(cityName);
+        this.dataDownloader.downloadForecastWeather(cityName);
     }
 
-    private void saveFile(Response response) {
+    public void saveFile(Response response) {
         if(response.body() instanceof TodayResponse) {
             try {
                 System.out.println(response.body());
+                this.cityTextView.setText(((TodayResponse) response.body()).name);
                 this.weatherVM.setTodayWeather((TodayResponse)response.body());
-                FileOutputStream fos = context.openFileOutput(TODAY_WEATHER_FILENAME, Context.MODE_PRIVATE);
+                FileOutputStream fos = context.openFileOutput(((TodayResponse) response.body()).name + '_' + TODAY_WEATHER_FILENAME, Context.MODE_PRIVATE);
                 ObjectOutputStream os = new ObjectOutputStream(fos);
                 os.writeObject(response.body());
                 os.close();
@@ -191,11 +225,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 System.out.println("error saving today data!");
                 e.printStackTrace();
             }
-        } else {
+        } else if(response.body() instanceof FiveDayResponse) {
             try {
                 System.out.println(response.body());
                 this.weatherVM.setForecastWeather((FiveDayResponse)response.body());
-                FileOutputStream fos = context.openFileOutput(FORECAST_WEATHER_FILENAME, Context.MODE_PRIVATE);
+                FileOutputStream fos = context.openFileOutput(((FiveDayResponse) response.body()).city.name + '_' + FORECAST_WEATHER_FILENAME, Context.MODE_PRIVATE);
                 ObjectOutputStream os = new ObjectOutputStream(fos);
                 os.writeObject(response.body());
                 os.close();

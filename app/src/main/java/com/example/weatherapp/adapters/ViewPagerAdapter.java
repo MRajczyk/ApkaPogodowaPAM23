@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.weatherapp.Fragments.FavoriteCitiesFragment;
 import com.example.weatherapp.Fragments.MoreDaysFragment;
 import com.example.weatherapp.Fragments.MoreInfoFragment;
+import com.example.weatherapp.Fragments.SearchFragment;
 import com.example.weatherapp.Fragments.TodayFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
@@ -32,7 +32,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 return new MoreDaysFragment();
             default:
-                return new FavoriteCitiesFragment();
+                return new SearchFragment();
         }
     }
 }

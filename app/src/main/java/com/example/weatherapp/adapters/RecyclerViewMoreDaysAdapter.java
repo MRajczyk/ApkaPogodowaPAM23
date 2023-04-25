@@ -21,12 +21,12 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewMoreDaysAdapter extends RecyclerView.Adapter<RecyclerViewMoreDaysAdapter.ViewHolder> {
 
     private final FiveDayResponse weatherData;
     private final Context context;
 
-    public RecyclerViewAdapter(FiveDayResponse weatherData, Context context) {
+    public RecyclerViewMoreDaysAdapter(FiveDayResponse weatherData, Context context) {
         this.weatherData = weatherData;
         this.context = context;
     }
@@ -88,7 +88,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemView);
             myTextViewDays = itemView.findViewById(R.id.day);
             myTextViewHour = itemView.findViewById(R.id.hour);
-            myTextViewTemperature = itemView.findViewById(R.id.temperature);
+            myTextViewTemperature = itemView.findViewById(R.id.city_name);
             imageView = itemView.findViewById(R.id.WeatherImage);
         }
     }

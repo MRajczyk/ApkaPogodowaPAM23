@@ -9,7 +9,7 @@
     tools:context=".Fragments.MoreDaysFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewFavoriteCities"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/more_days_row" />
