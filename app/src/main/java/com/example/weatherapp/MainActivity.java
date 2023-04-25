@@ -34,9 +34,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -161,11 +158,15 @@ public class MainActivity extends AppCompatActivity implements Callback {
     @Override
     public void onResponse(@NonNull Call call, @NonNull Response response) {
         this.saveFile(response);
+        if(response.code() > 400) {
+            Toast.makeText(MainActivity.this, "City doesn't exist!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onFailure(@NonNull Call call, @NonNull Throwable t) {
         System.out.println("Error!");
+        Toast.makeText(MainActivity.this, "Failed to download data", Toast.LENGTH_SHORT).show();
     }
 
     public void readFile(String cityName) {
