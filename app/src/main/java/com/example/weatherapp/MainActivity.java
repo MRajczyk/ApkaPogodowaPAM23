@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.weatherapp.adapters.ViewPagerAdapter;
+import com.example.weatherapp.adapters.ViewPagerAdapterTablet;
 import com.example.weatherapp.models.FiveDayResponse;
 import com.example.weatherapp.models.TodayResponse;
 import com.example.weatherapp.viewmodels.WeatherViewModel;
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
                 refreshData();
-                Toast.makeText(MainActivity.this, "Refreshing data", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Refreshing data", Toast.LENGTH_SHORT).show();
                 handler.postDelayed(runnable, delay);
             }
         }, delay);
@@ -91,8 +93,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         }
         //setting thread policy for main thread api requests(Testing)
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
+        if (SDK_INT > 8) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -111,24 +112,44 @@ public class MainActivity extends AppCompatActivity implements Callback {
         TabLayout tabLayout = findViewById(R.id.fragmentTabs);
         ViewPager2 viewPager2 = findViewById(R.id.viewPagerFragments);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
-        viewPager2.setAdapter(adapter);
-        new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
-            switch (position) {
-                case 1:
-                    tab.setText("Today");
-                    break;
-                case 2:
-                    tab.setText("More info");
-                    break;
-                case 3:
-                    tab.setText("More days");
-                    break;
-                default:
-                    tab.setText("Search");
-                    break;
-            }
-        }).attach();
+        Configuration config = getResources().getConfiguration();
+        if(config.smallestScreenWidthDp >= 600) {
+            ViewPagerAdapterTablet adapter = new ViewPagerAdapterTablet(this);
+            viewPager2.setAdapter(adapter);
+            new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+                switch (position) {
+                    case 1:
+                        tab.setText("Today");
+                        break;
+                    case 2:
+                        tab.setText("More days");
+                        break;
+                    default:
+                        tab.setText("Search");
+                        break;
+                }
+            }).attach();
+        }
+        else {
+            ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+            viewPager2.setAdapter(adapter);
+            new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
+                switch (position) {
+                    case 1:
+                        tab.setText("Today");
+                        break;
+                    case 2:
+                        tab.setText("More info");
+                        break;
+                    case 3:
+                        tab.setText("More days");
+                        break;
+                    default:
+                        tab.setText("Search");
+                        break;
+                }
+            }).attach();
+        }
     }
 
     @Override
@@ -174,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements Callback {
             File file = new File(getApplicationContext().getFilesDir(), cityName + '_' + TODAY_WEATHER_FILENAME);
             if (file.exists()) {
                 System.out.println("File exists... Trying to read if modified less than one hour ago...");
-                long oneHour = 3600000;
-                if (file.lastModified() + oneHour > System.currentTimeMillis()) {
+                long FIFTEEN_MINUTES = 900000;
+                if (file.lastModified() + FIFTEEN_MINUTES > System.currentTimeMillis()) {
                     System.out.println("Modified less than hour ago");
                     //System.out.println("reading today's data");
                     FileInputStream fis = context.openFileInput(cityName + '_' + TODAY_WEATHER_FILENAME);

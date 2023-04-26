@@ -1,5 +1,6 @@
 package com.example.weatherapp.Fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.weatherapp.R;
+import com.example.weatherapp.adapters.ViewPagerAdapterTablet;
 import com.example.weatherapp.models.TodayResponse;
 import com.example.weatherapp.viewmodels.WeatherViewModel;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.text.DecimalFormat;
 
@@ -40,12 +43,14 @@ public class MoreInfoFragment extends Fragment {
     private void refreshMoreData(TodayResponse result) {
         //System.out.println("refresh");
 
-        ImageView weatherImage = view.findViewById(R.id.WeatherImage);
-        int resId = view.getContext().getResources().getIdentifier('_' + result.weather[0].icon, "drawable", view.getContext().getPackageName());
-        //System.out.println(resId);
-        weatherImage.setBackgroundResource(resId);
-
         DecimalFormat df = new DecimalFormat("#.##");
+
+        Configuration config = getResources().getConfiguration();
+        if(config.smallestScreenWidthDp < 600) {
+            ImageView weatherImage = view.findViewById(R.id.WeatherImage);
+            int resId = view.getContext().getResources().getIdentifier('_' + result.weather[0].icon, "drawable", view.getContext().getPackageName());
+            weatherImage.setBackgroundResource(resId);
+        }
 
         TextView windDirection = view.findViewById(R.id.WindDirection);
         windDirection.setText(result.wind.deg + " °");

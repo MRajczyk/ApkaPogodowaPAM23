@@ -1,6 +1,7 @@
 package com.example.weatherapp.Fragments;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,10 +51,12 @@ public class TodayFragment extends Fragment {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(view.getContext());
         String tempRes = ConvertTempString.convertTemp(preferences, df, result.main.temp);
 
-        ImageView weatherImage = view.findViewById(R.id.WeatherImage);
-        int resId = view.getContext().getResources().getIdentifier('_' + result.weather[0].icon, "drawable", view.getContext().getPackageName());
-        System.out.println(resId);
-        weatherImage.setBackgroundResource(resId);
+        Configuration config = getResources().getConfiguration();
+        if(config.smallestScreenWidthDp < 600) {
+            ImageView weatherImage = view.findViewById(R.id.WeatherImage);
+            int resId = view.getContext().getResources().getIdentifier('_' + result.weather[0].icon, "drawable", view.getContext().getPackageName());
+            weatherImage.setBackgroundResource(resId);
+        }
 
         TextView temperatureData = view.findViewById(R.id.TemperatureData);
         temperatureData.setText(tempRes);
