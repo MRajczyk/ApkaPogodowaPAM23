@@ -74,7 +74,7 @@ public class SearchFragment extends Fragment implements ClickListenerFinder {
 
     private void reloadFragment(String city){
         saveFile();
-        ((MainActivity) requireActivity()).readFile(city);
+        ((MainActivity) requireActivity()).readData(city);
     }
 
     private void saveFile() {

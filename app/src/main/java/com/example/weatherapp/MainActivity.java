@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
         this.units = preferences.getString("Temperature_units","Kelvin");
         this.dataDownloader = new DataDownloader(this);
 
-        readFile(this.cityTextView.getText().toString());
+        readData(this.cityTextView.getText().toString());
 
         TabLayout tabLayout = findViewById(R.id.fragmentTabs);
         ViewPager2 viewPager2 = findViewById(R.id.viewPagerFragments);
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     }
 
     private void refreshData() {
-        this.readFile(this.cityTextView.getText().toString());
+        this.readData(this.cityTextView.getText().toString());
     }
 
     @Override
@@ -190,13 +192,14 @@ public class MainActivity extends AppCompatActivity implements Callback {
         Toast.makeText(MainActivity.this, "Failed to download data", Toast.LENGTH_SHORT).show();
     }
 
-    public void readFile(String cityName) {
+    public void readData(String cityName) {
         try {
             File file = new File(getApplicationContext().getFilesDir(), cityName + '_' + TODAY_WEATHER_FILENAME);
+            boolean networkAvailable = isNetworkAvaliable(getApplicationContext());
             if (file.exists()) {
                 System.out.println("File exists... Trying to read if modified less than one hour ago...");
                 long FIFTEEN_MINUTES = 900000;
-                if (file.lastModified() + FIFTEEN_MINUTES > System.currentTimeMillis()) {
+                if (file.lastModified() + FIFTEEN_MINUTES > System.currentTimeMillis() || !networkAvailable) {
                     System.out.println("Modified less than hour ago");
                     //System.out.println("reading today's data");
                     FileInputStream fis = context.openFileInput(cityName + '_' + TODAY_WEATHER_FILENAME);
@@ -206,8 +209,6 @@ public class MainActivity extends AppCompatActivity implements Callback {
                     fis.close();
                     this.weatherVM.setTodayWeather(todayResponse);
                     //System.out.println(this.weatherVM.getTodayWeatherData().getValue());
-
-                    //TODO: ADD CHECKING IF FORECAST WEATHER FILE EXISTS!!! (SHOULD, BUT WHO KNOWS.)
                     //System.out.println("reading forecast 5 days data");
                     fis = context.openFileInput(cityName + '_' + FORECAST_WEATHER_FILENAME);
                     is = new ObjectInputStream(fis);
@@ -227,9 +228,14 @@ public class MainActivity extends AppCompatActivity implements Callback {
             this.dataDownloader.downloadForecastWeather(cityName);
             e.printStackTrace();
         }
-        System.out.println("Refreshing data...");
-        this.dataDownloader.downloadTodaysWeather(cityName);
-        this.dataDownloader.downloadForecastWeather(cityName);
+        if(isNetworkAvaliable(getApplicationContext())) {
+            System.out.println("Refreshing data...");
+            this.dataDownloader.downloadTodaysWeather(cityName);
+            this.dataDownloader.downloadForecastWeather(cityName);
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void saveFile(Response response) {
@@ -260,6 +266,22 @@ public class MainActivity extends AppCompatActivity implements Callback {
                 System.out.println("error saving forecast data!");
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static boolean isNetworkAvaliable(Context ctx) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) ctx
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if ((connectivityManager
+                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE) != null && connectivityManager
+                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED)
+                || (connectivityManager
+                .getNetworkInfo(ConnectivityManager.TYPE_WIFI) != null && connectivityManager
+                .getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                .getState() == NetworkInfo.State.CONNECTED)) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
