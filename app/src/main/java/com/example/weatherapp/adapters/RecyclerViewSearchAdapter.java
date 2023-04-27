@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,15 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.weatherapp.R;
-import com.example.weatherapp.utility.ClickListenerFinder;
+import com.example.weatherapp.utility.ISearchListener;
 import java.util.ArrayList;
 
 public class RecyclerViewSearchAdapter extends RecyclerView.Adapter<RecyclerViewSearchAdapter.ViewHolderFinder> {
 
     private final ArrayList<String> cityList;
-    private final ClickListenerFinder clickListenerFinder;
+    private final ISearchListener clickListenerFinder;
 
-    public RecyclerViewSearchAdapter(ArrayList<String> cityList, ClickListenerFinder clickListenerFinder) {
+    public RecyclerViewSearchAdapter(ArrayList<String> cityList, ISearchListener clickListenerFinder) {
         this.cityList = cityList;
         this.clickListenerFinder = clickListenerFinder;
     }
@@ -63,7 +62,7 @@ public class RecyclerViewSearchAdapter extends RecyclerView.Adapter<RecyclerView
         TextView cityName;
         ImageView deleteFromFavoriteList;
 
-        public ViewHolderFinder(@NonNull View itemView, ClickListenerFinder clickListenerFinder, int height) {
+        public ViewHolderFinder(@NonNull View itemView, ISearchListener clickListenerFinder, int height) {
             super(itemView);
 
             itemView.setOnClickListener(v -> clickListenerFinder.onClickSelectCity(position(getAdapterPosition() - 1)));

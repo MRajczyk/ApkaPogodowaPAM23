@@ -11,4 +11,18 @@
         <item>Fahrenheit</item>
         <item>Celsius</item>
     </string-array>
+
+    <string-array name="Interval_seconds">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+    </string-array>
+
+    <string-array name="Interval_seconds_values">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+    </string-array>
 </resources>

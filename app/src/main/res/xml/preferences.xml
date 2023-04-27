@@ -10,4 +10,14 @@
             app:title="Temperature units"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
+    <PreferenceCategory
+        app:title="Refresh interval (seconds)">
+        <ListPreference
+            app:defaultValue="15"
+            app:entries="@array/Interval_seconds"
+            app:entryValues="@array/Interval_seconds_values"
+            app:key="Refresh_interval"
+            app:title="Refresh interval"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 </PreferenceScreen>

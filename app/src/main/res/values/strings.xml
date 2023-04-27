@@ -15,6 +15,9 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="pressure">Pressure</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="are_you_sure">Are you sure?</string>
     <string name="wind_direction">Wind direction</string>
     <string name="wind_strength">Wind strength</string>
     <string name="visibility">Visiblility</string>

@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -28,6 +30,7 @@ import com.example.weatherapp.adapters.ViewPagerAdapter;
 import com.example.weatherapp.adapters.ViewPagerAdapterTablet;
 import com.example.weatherapp.models.FiveDayResponse;
 import com.example.weatherapp.models.TodayResponse;
+import com.example.weatherapp.utility.ShowDialog;
 import com.example.weatherapp.viewmodels.WeatherViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -38,12 +41,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements Callback {
+public class MainActivity extends AppCompatActivity implements Callback, ShowDialog {
 
     private String units;
     private WeatherViewModel weatherVM;
@@ -52,20 +57,29 @@ public class MainActivity extends AppCompatActivity implements Callback {
     private final String TODAY_WEATHER_FILENAME = "today.txt";
     private final String FORECAST_WEATHER_FILENAME = "forecast.txt";
     private Context context;
+    private int delay;
 
     Handler handler = new Handler();
     Runnable runnable;
-    int delay = 15*1000; //Delay for 15 seconds.  One second = 1000 milliseconds.
 
+    @Override
+    public void showDialog(DialogFragment dialogFragment)
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        dialogFragment.show(fragmentManager, "dialog");
+    }
 
     @Override
     protected void onResume() {
         //start handler as activity become visible
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //read temperature unit from preferences, works cuz we always create main activity when coming back from settings
+        this.delay = Integer.parseInt(preferences.getString("Refresh_interval","15")) * 1000;
+        //System.out.println("wywolanie onResume()" + this.delay);
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
                 refreshData();
-                //Toast.makeText(MainActivity.this, "Refreshing data", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Refreshing data, set delay:" + delay, Toast.LENGTH_SHORT).show();
                 handler.postDelayed(runnable, delay);
             }
         }, delay);
@@ -270,18 +284,12 @@ public class MainActivity extends AppCompatActivity implements Callback {
     }
 
     public static boolean isNetworkAvaliable(Context ctx) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) ctx
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if ((connectivityManager
-                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE) != null && connectivityManager
-                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED)
-                || (connectivityManager
-                .getNetworkInfo(ConnectivityManager.TYPE_WIFI) != null && connectivityManager
-                .getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-                .getState() == NetworkInfo.State.CONNECTED)) {
-            return true;
-        } else {
-            return false;
+        try {
+            InetAddress address = InetAddress.getByName("www.google.com");
+            return !address.equals("");
+        } catch (UnknownHostException e) {
+            System.out.println("Internet connection not available");
         }
+        return false;
     }
 }
